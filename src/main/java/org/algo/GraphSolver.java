@@ -10,6 +10,8 @@ public class GraphSolver {
     private final double[][] distMatrix;
     private final List<Edge> mstEdges = new ArrayList<>();
     private final List<Integer> tspPath = new ArrayList<>();
+    private boolean fwExecuted = false;
+    private boolean mstExecuted = false;
 
     public GraphSolver(int n, List<Edge> initialEdges) {
         this.n = n;
@@ -27,6 +29,7 @@ public class GraphSolver {
     }
 
     public void runFloydWarshall() {
+        if (fwExecuted) return;
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
@@ -36,6 +39,7 @@ public class GraphSolver {
                 }
             }
         }
+        fwExecuted = true;
     }
 
     public double[][] getDistanceMatrix() {
@@ -43,6 +47,7 @@ public class GraphSolver {
     }
 
     public List<Edge> getKnEdges() {
+        if (!fwExecuted) runFloydWarshall();
         List<Edge> edges = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
@@ -55,6 +60,9 @@ public class GraphSolver {
     }
 
     public void runKruskal() {
+        if (mstExecuted) return;
+        if (!fwExecuted) runFloydWarshall();
+        
         List<Edge> allEdges = getKnEdges();
         Collections.sort(allEdges);
         DisjointSet ds = new DisjointSet(n);
@@ -65,6 +73,7 @@ public class GraphSolver {
                 ds.union(e.getU(), e.getV());
             }
         }
+        mstExecuted = true;
     }
 
     public List<Edge> getMstEdges() {
@@ -72,6 +81,8 @@ public class GraphSolver {
     }
 
     public void runTSPApprox() {
+        if (!mstExecuted) runKruskal();
+        
         List<List<Integer>> adj = new ArrayList<>(n);
         for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
         for (Edge e : mstEdges) {
@@ -81,8 +92,10 @@ public class GraphSolver {
 
         tspPath.clear();
         boolean[] visited = new boolean[n];
-        dfs(0, adj, visited);
-        tspPath.add(0);
+        if (n > 0) {
+            dfs(0, adj, visited);
+            tspPath.add(0);
+        }
     }
 
     private void dfs(int u, List<List<Integer>> adj, boolean[] visited) {

@@ -24,6 +24,9 @@ public class Main extends JFrame {
             if (is == null) throw new RuntimeException("File not found: /cities.txt");
             loader.load(is);
             List<City> cities = loader.getCities();
+            
+            // Debug output to verify data loading
+            System.out.println("Loaded " + cities.size() + " cities and " + loader.getEdges().size() + " edges.");
 
             GraphSolver solver = new GraphSolver(cities.size(), loader.getEdges());
             GraphPanel panel = new GraphPanel(cities);
@@ -40,18 +43,21 @@ public class Main extends JFrame {
                 solver.runFloydWarshall();
                 panel.setEdges(solver.getKnEdges());
                 panel.setTspPath(null);
+                panel.repaint();
             });
 
             btnMST.addActionListener(e -> {
                 solver.runKruskal();
                 panel.setEdges(solver.getMstEdges());
                 panel.setTspPath(null);
+                panel.repaint();
             });
 
             btnTSP.addActionListener(e -> {
                 solver.runTSPApprox();
                 panel.setEdges(solver.getMstEdges());
                 panel.setTspPath(solver.getTspPath());
+                panel.repaint();
             });
 
             controlPanel.add(btnFW);
