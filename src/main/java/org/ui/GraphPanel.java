@@ -40,10 +40,10 @@ public class GraphPanel extends JPanel {
         int minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
 
         for (City c : cities) {
-            minX = Math.min(minX, c.getLocation().getX());
-            maxX = Math.max(maxX, c.getLocation().getX());
-            minY = Math.min(minY, c.getLocation().getY());
-            maxY = Math.max(maxY, c.getLocation().getY());
+            minX = Math.min(minX, c.getLocation().x());
+            maxX = Math.max(maxX, c.getLocation().x());
+            minY = Math.min(minY, c.getLocation().y());
+            maxY = Math.max(maxY, c.getLocation().y());
         }
 
         int w = getWidth() - 2 * padding;
@@ -69,9 +69,9 @@ public class GraphPanel extends JPanel {
         if (edges != null) {
             g2.setColor(Color.LIGHT_GRAY);
             for (Edge e : edges) {
-                Point p1 = getTransformedPoint(cities.get(e.getU()).getLocation(), minX, minY, scale, offsetX, offsetY);
-                Point p2 = getTransformedPoint(cities.get(e.getV()).getLocation(), minX, minY, scale, offsetX, offsetY);
-                g2.drawLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                Point p1 = getTransformedPoint(cities.get(e.u()).getLocation(), minX, minY, scale, offsetX, offsetY);
+                Point p2 = getTransformedPoint(cities.get(e.v()).getLocation(), minX, minY, scale, offsetX, offsetY);
+                g2.drawLine(p1.x(), p1.y(), p2.x(), p2.y());
             }
         }
 
@@ -82,23 +82,23 @@ public class GraphPanel extends JPanel {
             for (int i = 0; i < tspPath.size() - 1; i++) {
                 Point p1 = getTransformedPoint(cities.get(tspPath.get(i)).getLocation(), minX, minY, scale, offsetX, offsetY);
                 Point p2 = getTransformedPoint(cities.get(tspPath.get(i + 1)).getLocation(), minX, minY, scale, offsetX, offsetY);
-                g2.drawLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                g2.drawLine(p1.x(), p1.y(), p2.x(), p2.y());
             }
         }
 
         for (City c : cities) {
             Point p = getTransformedPoint(c.getLocation(), minX, minY, scale, offsetX, offsetY);
             g2.setColor(Color.BLUE);
-            g2.fillOval(p.getX() - 5, p.getY() - 5, 10, 10);
+            g2.fillOval(p.x() - 5, p.y() - 5, 10, 10);
             
             g2.setColor(Color.BLACK);
-            g2.drawString(c.getName(), p.getX() + 8, p.getY() + 5);
+            g2.drawString(c.getName(), p.x() + 8, p.y() + 5);
         }
     }
 
     private Point getTransformedPoint(Point original, int minX, int minY, double scale, int offsetX, int offsetY) {
-        int x = offsetX + (int) ((original.getX() - minX) * scale);
-        int y = offsetY + (int) ((original.getY() - minY) * scale);
+        int x = offsetX + (int) ((original.x() - minX) * scale);
+        int y = offsetY + (int) ((original.y() - minY) * scale);
         return new Point(x, y);
     }
 }

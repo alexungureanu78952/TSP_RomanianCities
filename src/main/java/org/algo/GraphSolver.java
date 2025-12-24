@@ -23,8 +23,8 @@ public class GraphSolver {
             }
         }
         for (Edge e : initialEdges) {
-            distMatrix[e.getU()][e.getV()] = e.getWeight();
-            distMatrix[e.getV()][e.getU()] = e.getWeight();
+            distMatrix[e.u()][e.v()] = e.weight();
+            distMatrix[e.v()][e.u()] = e.weight();
         }
     }
 
@@ -63,9 +63,9 @@ public class GraphSolver {
         DisjointSet ds = new DisjointSet(n);
         mstEdges.clear();
         for (Edge e : allEdges) {
-            if (ds.find(e.getU()) != ds.find(e.getV())) {
+            if (ds.find(e.u()) != ds.find(e.v())) {
                 mstEdges.add(e);
-                ds.union(e.getU(), e.getV());
+                ds.union(e.u(), e.v());
             }
         }
         mstExecuted = true;
@@ -81,8 +81,8 @@ public class GraphSolver {
         List<List<Integer>> adj = new ArrayList<>(n);
         for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
         for (Edge e : mstEdges) {
-            adj.get(e.getU()).add(e.getV());
-            adj.get(e.getV()).add(e.getU());
+            adj.get(e.u()).add(e.v());
+            adj.get(e.v()).add(e.u());
         }
 
         tspPath.clear();

@@ -1,12 +1,10 @@
 package org.model;
 
 public class City {
-    private final int id;
     private final String name;
     private final Point location;
 
-    public City(int id, String name, Point location) {
-        this.id = id;
+    public City(String name, Point location) {
         this.name = name;
         this.location = location;
     }

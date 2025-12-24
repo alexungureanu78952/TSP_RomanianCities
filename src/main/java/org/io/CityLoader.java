@@ -25,27 +25,30 @@ public class CityLoader {
             boolean edgeSection = false;
             int cityIdCounter = 0;
 
+            label:
             while ((line = br.readLine()) != null) {
                 line = line.trim();
-                if (line.isEmpty()) continue;
-                if (line.equals("NODE_COORD_SECTION")) {
-                    coordSection = true;
-                    edgeSection = false;
-                    continue;
+                switch (line) {
+                    case "":
+                        continue;
+                    case "NODE_COORD_SECTION":
+                        coordSection = true;
+                        edgeSection = false;
+                        continue;
+                    case "EDGE_WEIGHT_SECTION":
+                        coordSection = false;
+                        edgeSection = true;
+                        continue;
+                    case "EOF":
+                        break label;
                 }
-                if (line.equals("EDGE_WEIGHT_SECTION")) {
-                    coordSection = false;
-                    edgeSection = true;
-                    continue;
-                }
-                if (line.equals("EOF")) break;
 
                 if (coordSection) {
                     String[] parts = line.split("\\s+");
                     String name = parts[0];
                     int x = Integer.parseInt(parts[1]);
                     int y = Integer.parseInt(parts[2]);
-                    City city = new City(cityIdCounter, name, new Point(x, y));
+                    City city = new City(name, new Point(x, y));
                     cities.add(city);
                     nameToId.put(name, cityIdCounter);
                     cityIdCounter++;

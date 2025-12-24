@@ -57,7 +57,7 @@ public class Main extends JFrame {
                 panel.setEdges(solver.getMstEdges());
                 panel.setTspPath(solver.getTspPath());
                 panel.repaint();
-                
+
                 List<Integer> path = solver.getTspPath();
                 StringBuilder sb = new StringBuilder();
                 sb.append("Circuit TSP Aproximativ (Preordine MST): ");
@@ -65,7 +65,7 @@ public class Main extends JFrame {
                     sb.append(cities.get(path.get(i)).getName());
                     if (i < path.size() - 1) sb.append(" -> ");
                 }
-                System.out.println(sb.toString());
+                System.out.println(sb);
             });
 
             controlPanel.add(btnFW);
@@ -80,8 +80,6 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Main().setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new Main().setVisible(true));
     }
 }
