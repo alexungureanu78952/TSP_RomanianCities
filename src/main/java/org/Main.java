@@ -58,6 +58,16 @@ public class Main extends JFrame {
                 panel.setEdges(solver.getMstEdges());
                 panel.setTspPath(solver.getTspPath());
                 panel.repaint();
+                
+                // Afisare vector rezultat in consola conform cerintei d)
+                List<Integer> path = solver.getTspPath();
+                StringBuilder sb = new StringBuilder();
+                sb.append("Circuit TSP Aproximativ (Preordine MST): ");
+                for (int i = 0; i < path.size(); i++) {
+                    sb.append(cities.get(path.get(i)).getName());
+                    if (i < path.size() - 1) sb.append(" -> ");
+                }
+                System.out.println(sb.toString());
             });
 
             controlPanel.add(btnFW);
