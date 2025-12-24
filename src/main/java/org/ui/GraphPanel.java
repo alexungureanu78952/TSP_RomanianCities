@@ -12,7 +12,7 @@ public class GraphPanel extends JPanel {
     private final List<City> cities;
     private List<Edge> edges;
     private List<Integer> tspPath;
-    private final int padding = 40;
+    private final int padding = 60;
 
     public GraphPanel(List<City> cities) {
         this.cities = cities;
@@ -48,15 +48,30 @@ public class GraphPanel extends JPanel {
 
         int w = getWidth() - 2 * padding;
         int h = getHeight() - 2 * padding;
-        double scaleX = (maxX == minX) ? 1 : (double) w / (maxX - minX);
-        double scaleY = (maxY == minY) ? 1 : (double) h / (maxY - minY);
+        
+        double dataW = maxX - minX;
+        double dataH = maxY - minY;
+
+        if (dataW == 0) dataW = 1;
+        if (dataH == 0) dataH = 1;
+
+        // Maintain aspect ratio: use the smallest scaling factor to fit both dimensions
+        double scale = Math.min((double)w / dataW, (double)h / dataH);
+        
+        // Calculate dimensions of the drawing
+        int drawnW = (int) (dataW * scale);
+        int drawnH = (int) (dataH * scale);
+        
+        // Center the drawing
+        int offsetX = (getWidth() - drawnW) / 2;
+        int offsetY = (getHeight() - drawnH) / 2;
 
         // Draw Edges
         if (edges != null) {
             g2.setColor(Color.LIGHT_GRAY);
             for (Edge e : edges) {
-                Point p1 = getScaledPoint(cities.get(e.getU()), minX, minY, scaleX, scaleY);
-                Point p2 = getScaledPoint(cities.get(e.getV()), minX, minY, scaleX, scaleY);
+                Point p1 = getTransformedPoint(cities.get(e.getU()).getLocation(), minX, minY, scale, offsetX, offsetY);
+                Point p2 = getTransformedPoint(cities.get(e.getV()).getLocation(), minX, minY, scale, offsetX, offsetY);
                 g2.drawLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
             }
         }
@@ -66,26 +81,26 @@ public class GraphPanel extends JPanel {
             g2.setColor(Color.RED);
             g2.setStroke(new BasicStroke(2));
             for (int i = 0; i < tspPath.size() - 1; i++) {
-                Point p1 = getScaledPoint(cities.get(tspPath.get(i)), minX, minY, scaleX, scaleY);
-                Point p2 = getScaledPoint(cities.get(tspPath.get(i + 1)), minX, minY, scaleX, scaleY);
+                Point p1 = getTransformedPoint(cities.get(tspPath.get(i)).getLocation(), minX, minY, scale, offsetX, offsetY);
+                Point p2 = getTransformedPoint(cities.get(tspPath.get(i + 1)).getLocation(), minX, minY, scale, offsetX, offsetY);
                 g2.drawLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
             }
         }
 
         // Draw Nodes
-        g2.setColor(Color.BLUE);
         for (City c : cities) {
-            Point p = getScaledPoint(c, minX, minY, scaleX, scaleY);
-            g2.fillOval(p.getX() - 5, p.getY() - 5, 10, 10);
-            g2.setColor(Color.BLACK);
-            g2.drawString(c.getName(), p.getX() + 8, p.getY());
+            Point p = getTransformedPoint(c.getLocation(), minX, minY, scale, offsetX, offsetY);
             g2.setColor(Color.BLUE);
+            g2.fillOval(p.getX() - 5, p.getY() - 5, 10, 10);
+            
+            g2.setColor(Color.BLACK);
+            g2.drawString(c.getName(), p.getX() + 8, p.getY() + 5);
         }
     }
 
-    private Point getScaledPoint(City c, int minX, int minY, double scaleX, double scaleY) {
-        int x = padding + (int) ((c.getLocation().getX() - minX) * scaleX);
-        int y = padding + (int) ((c.getLocation().getY() - minY) * scaleY);
+    private Point getTransformedPoint(Point original, int minX, int minY, double scale, int offsetX, int offsetY) {
+        int x = offsetX + (int) ((original.getX() - minX) * scale);
+        int y = offsetY + (int) ((original.getY() - minY) * scale);
         return new Point(x, y);
     }
 }
