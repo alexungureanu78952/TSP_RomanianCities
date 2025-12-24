@@ -1,17 +1,73 @@
 package org;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import org.algo.GraphSolver;
+import org.io.CityLoader;
+import org.model.City;
+import org.ui.GraphPanel;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import javax.swing.*;
+import java.awt.*;
+import java.io.InputStream;
+import java.util.List;
+
+public class Main extends JFrame {
+
+    public Main() {
+        setTitle("TSP Romania");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        try {
+            CityLoader loader = new CityLoader();
+            InputStream is = getClass().getResourceAsStream("/cities.txt");
+            if (is == null) throw new RuntimeException("File not found: /cities.txt");
+            loader.load(is);
+            List<City> cities = loader.getCities();
+
+            GraphSolver solver = new GraphSolver(cities.size(), loader.getEdges());
+            GraphPanel panel = new GraphPanel(cities);
+
+            panel.setEdges(loader.getEdges());
+            add(panel, BorderLayout.CENTER);
+
+            JPanel controlPanel = new JPanel();
+            JButton btnFW = new JButton("1. Floyd-Warshall (Kn)");
+            JButton btnMST = new JButton("2. MST (Kruskal)");
+            JButton btnTSP = new JButton("3. TSP Approx");
+
+            btnFW.addActionListener(e -> {
+                solver.runFloydWarshall();
+                panel.setEdges(solver.getKnEdges());
+                panel.setTspPath(null);
+            });
+
+            btnMST.addActionListener(e -> {
+                solver.runKruskal();
+                panel.setEdges(solver.getMstEdges());
+                panel.setTspPath(null);
+            });
+
+            btnTSP.addActionListener(e -> {
+                solver.runTSPApprox();
+                panel.setEdges(solver.getMstEdges());
+                panel.setTspPath(solver.getTspPath());
+            });
+
+            controlPanel.add(btnFW);
+            controlPanel.add(btnMST);
+            controlPanel.add(btnTSP);
+            add(controlPanel, BorderLayout.SOUTH);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Main().setVisible(true);
+        });
     }
 }
