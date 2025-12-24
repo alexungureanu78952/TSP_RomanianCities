@@ -24,8 +24,7 @@ public class Main extends JFrame {
             if (is == null) throw new RuntimeException("File not found: /cities.txt");
             loader.load(is);
             List<City> cities = loader.getCities();
-            
-            // Debug output to verify data loading
+
             System.out.println("Loaded " + cities.size() + " cities and " + loader.getEdges().size() + " edges.");
 
             GraphSolver solver = new GraphSolver(cities.size(), loader.getEdges());
@@ -59,7 +58,6 @@ public class Main extends JFrame {
                 panel.setTspPath(solver.getTspPath());
                 panel.repaint();
                 
-                // Afisare vector rezultat in consola conform cerintei d)
                 List<Integer> path = solver.getTspPath();
                 StringBuilder sb = new StringBuilder();
                 sb.append("Circuit TSP Aproximativ (Preordine MST): ");

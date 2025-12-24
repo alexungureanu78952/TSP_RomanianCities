@@ -41,11 +41,6 @@ public class GraphSolver {
         }
         fwExecuted = true;
     }
-
-    public double[][] getDistanceMatrix() {
-        return distMatrix;
-    }
-
     public List<Edge> getKnEdges() {
         if (!fwExecuted) runFloydWarshall();
         List<Edge> edges = new ArrayList<>();

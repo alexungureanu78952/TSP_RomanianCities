@@ -55,18 +55,17 @@ public class GraphPanel extends JPanel {
         if (dataW == 0) dataW = 1;
         if (dataH == 0) dataH = 1;
 
-        // Maintain aspect ratio: use the smallest scaling factor to fit both dimensions
+
         double scale = Math.min((double)w / dataW, (double)h / dataH);
         
-        // Calculate dimensions of the drawing
+
         int drawnW = (int) (dataW * scale);
         int drawnH = (int) (dataH * scale);
         
-        // Center the drawing
+
         int offsetX = (getWidth() - drawnW) / 2;
         int offsetY = (getHeight() - drawnH) / 2;
 
-        // Draw Edges
         if (edges != null) {
             g2.setColor(Color.LIGHT_GRAY);
             for (Edge e : edges) {
@@ -76,7 +75,7 @@ public class GraphPanel extends JPanel {
             }
         }
 
-        // Draw TSP Path
+
         if (tspPath != null && tspPath.size() > 1) {
             g2.setColor(Color.RED);
             g2.setStroke(new BasicStroke(2));
@@ -87,7 +86,6 @@ public class GraphPanel extends JPanel {
             }
         }
 
-        // Draw Nodes
         for (City c : cities) {
             Point p = getTransformedPoint(c.getLocation(), minX, minY, scale, offsetX, offsetY);
             g2.setColor(Color.BLUE);

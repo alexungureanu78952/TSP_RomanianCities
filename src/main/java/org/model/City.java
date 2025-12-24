@@ -11,7 +11,6 @@ public class City {
         this.location = location;
     }
 
-    public int getId() { return id; }
     public String getName() { return name; }
     public Point getLocation() { return location; }
 
